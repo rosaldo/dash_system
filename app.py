@@ -208,7 +208,7 @@ def login_password_previous(bt_click, name, data):
 @app.callback(
     [
         Output("login_password", "type"),
-        Output("login_password_toggle", "children"),
+        Output("login_password_toggle", "className"),
     ],
     [
         Input("login_password_toggle", "n_clicks"),
@@ -217,9 +217,9 @@ def login_password_previous(bt_click, name, data):
 )
 def toggle_password_visibility(bt_click):
     if bt_click % 2 == 1:
-        return ["text", html.I(className="bi bi-eye-fill")]
+        return ["text", "bi bi-eye-slash-fill"]
     else:
-        return ["password", html.I(className="bi bi-eye-slash-fill")]
+        return ["password", "bi bi-eye-fill"]
 
 
 @app.callback(

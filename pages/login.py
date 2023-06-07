@@ -11,6 +11,26 @@ dash.register_page(__name__, path="/", title="DLS - Login")
 
 def layout():
     if not (current_user and current_user.is_authenticated):
+        arrow_right = {
+            "width":"40px",
+            "height":"40px",
+            "font-size":"30px",
+            "text-align":"left",
+            "padding":"0px",
+            "margin":"0px",
+            "cursor":"pointer",
+            "color":"#777",
+        }
+        arrow_left = {
+            "width":"40px",
+            "height":"40px",
+            "font-size":"30px",
+            "text-align":"right",
+            "padding":"0px",
+            "margin":"0px",
+            "cursor":"pointer",
+            "color":"#777",
+        }
         return dbc.Container(
             fluid=True,
             children=[
@@ -56,10 +76,10 @@ def layout():
                                         dbc.Row(
                                             justify="end",
                                             children=[
-                                                dbc.Button(
+                                                html.A(
+                                                    className="bi bi-box-arrow-in-right",
                                                     id="login_email_next",
-                                                    style={"width":"90px", "margin-right":"5px"},
-                                                    children="próximo",
+                                                    style=arrow_right,
                                                 )
                                             ]
                                         )
@@ -94,15 +114,15 @@ def layout():
                                         dbc.Row(
                                             justify="between",
                                             children=[
-                                                dbc.Button(
+                                                html.A(
+                                                    className="bi bi-box-arrow-in-left",
                                                     id="login_register_previous",
-                                                    style={"width":"90px", "margin-left":"5px"},
-                                                    children="anterior",
+                                                    style=arrow_left,
                                                 ),
-                                                dbc.Button(
+                                                html.A(
+                                                    className="bi bi-box-arrow-in-right",
                                                     id="login_register_next",
-                                                    style={"width":"90px", "margin-right":"5px"},
-                                                    children="próximo",
+                                                    style=arrow_right,
                                                 )
                                             ]
                                         )
@@ -133,27 +153,27 @@ def layout():
                                                     placeholder="digite a senha que recebeu",
                                                     type="password",
                                                 ),
-                                                dbc.Button(
-                                                    html.I(className="bi bi-eye-slash-fill"),
-                                                    id="login_password_toggle",
-                                                    color="primary",
-                                                    outline=True,
-                                                    className="ml-2",
+                                                dbc.InputGroupText(
+                                                    html.A(
+                                                        className="bi bi-eye-fill",
+                                                        id="login_password_toggle",
+                                                        style={"cursor":"pointer", "color":"#777",}
+                                                    ),
                                                 ),
                                             ]
                                         ),
                                         dbc.Row(
                                             justify="between",
                                             children=[
-                                                dbc.Button(
+                                                html.A(
+                                                    className="bi bi-box-arrow-in-left",
                                                     id="login_password_previous",
-                                                    style={"width":"90px", "margin-left":"5px"},
-                                                    children="anterior",
+                                                    style=arrow_left,
                                                 ),
-                                                dbc.Button(
+                                                html.A(
+                                                    className="bi bi-box-arrow-in-right",
                                                     id="login_password_next",
-                                                    style={"width":"90px", "margin-right":"5px"},
-                                                    children="próximo",
+                                                    style=arrow_right,
                                                 )
                                             ]
                                         )
