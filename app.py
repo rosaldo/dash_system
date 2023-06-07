@@ -88,11 +88,33 @@ def update(ms):
 
 @app.callback(
     [
-        Output("login_name", "value"),
-        Output("login_password", "value"),
         Output("login_step_email", "style", allow_duplicate=True),
         Output("login_step_register", "style", allow_duplicate=True),
         Output("login_step_password", "style", allow_duplicate=True),
+        Output("login_step_status", "data", allow_duplicate=True),
+    ],
+    [
+        Input("login_step_status", "data"),
+    ],
+    prevent_initial_call="initial_duplicate",
+)
+def set_status_login(data):
+    if not data:
+        data = {
+            "email":{"width":"400px","padding":"0px","display":"flex"},
+            "register":{"width":"400px","padding":"0px","display":"none"},
+            "password":{"width":"400px","padding":"0px","display":"none"},
+        }
+    email = data["email"]
+    register = data["register"]
+    password = data["password"]
+    return [email, register, password, data]
+
+@app.callback(
+    [
+        Output("login_name", "value"),
+        Output("login_password", "value"),
+        Output("login_step_status", "data", allow_duplicate=True),
     ],
     [
         Input("login_email_next", "n_clicks"),
@@ -100,48 +122,44 @@ def update(ms):
     ],
     [
         State("login_email", "value"),
-        State("login_step_email", "style"),
-        State("login_step_register", "style"),
-        State("login_step_password", "style"),
+        State("login_step_status", "data"),
     ],
     prevent_initial_call=True,
 )
-def login_email_next(bt_click, key_submit, email, email_style, register_style, password_style):
-    password = dbase.set_user_pass(email)
-    if password:
-        smail.send_password(email, password)
-        email_style.update({"display":"none"})
-        register_style.update({"display":"none"})
-        password_style.update({"display":"flex"})
-    else:
-        email_style.update({"display":"none"})
-        register_style.update({"display":"flex"})
-        password_style.update({"display":"none"})
-    return ["", "", email_style, register_style, password_style]
+def login_email_next(bt_click, key_submit, email, data):
+    if email:
+        password = dbase.set_user_pass(email)
+        if password:
+            smail.send_password(email, password)
+            data["email"].update({"display":"none"})
+            data["register"].update({"display":"none"})
+            data["password"].update({"display":"flex"})
+        else:
+            data["email"].update({"display":"none"})
+            data["register"].update({"display":"flex"})
+            data["password"].update({"display":"none"})
+    return ["", "", data]
 
 @app.callback(
     [
-        Output("login_step_register", "style", allow_duplicate=True),
-        Output("login_step_email", "style", allow_duplicate=True),
+        Output("login_step_status", "data", allow_duplicate=True),
     ],
     [
         Input("login_register_previous", "n_clicks"),
     ],
     [
-        State("login_step_register", "style"),
-        State("login_step_email", "style"),
+        State("login_step_status", "data"),
     ],
     prevent_initial_call=True,
 )
-def login_register_previous(bt_click, register_style, email_style):
-    register_style.update({"display":"none"})
-    email_style.update({"display":"flex"})
-    return [register_style, email_style]
+def login_register_previous(bt_click, data):
+    data["register"].update({"display":"none"})
+    data["email"].update({"display":"flex"})
+    return [data]
 
 @app.callback(
     [
-        Output("login_step_register", "style", allow_duplicate=True),
-        Output("login_step_password", "style", allow_duplicate=True),
+        Output("login_step_status", "data", allow_duplicate=True),
     ],
     [
         Input("login_register_next", "n_clicks"),
@@ -150,46 +168,42 @@ def login_register_previous(bt_click, register_style, email_style):
     [
         State("login_name", "value"),
         State("login_email", "value"),
-        State("login_step_register", "style"),
-        State("login_step_password", "style"),
+        State("login_step_status", "data"),
     ],
     prevent_initial_call=True,
 )
-def login_register_next(bt_click, key_submit, name, email, register_style, password_style):
-    dbase.add_user(name, email, True)
-    password = dbase.set_user_pass(email)
-    smail.send_password(email, password)
-    register_style.update({"display":"none"})
-    password_style.update({"display":"flex"})
-    return [register_style, password_style]
+def login_register_next(bt_click, key_submit, name, email, data):
+    if name:
+        dbase.add_user(name, email, True)
+        password = dbase.set_user_pass(email)
+        smail.send_password(email, password)
+        data["register"].update({"display":"none"})
+        data["password"].update({"display":"flex"})
+    return [data]
 
 @app.callback(
     [
-        Output("login_step_email", "style", allow_duplicate=True),
-        Output("login_step_register", "style", allow_duplicate=True),
-        Output("login_step_password", "style", allow_duplicate=True),
+        Output("login_step_status", "data", allow_duplicate=True),
     ],
     [
         Input("login_password_previous", "n_clicks"),
     ],
     [
         State("login_name", "value"),
-        State("login_step_email", "style"),
-        State("login_step_register", "style"),
-        State("login_step_password", "style"),
+        State("login_step_status", "data"),
     ],
     prevent_initial_call=True,
 )
-def login_password_previous(bt_click, name, email_style, register_style, password_style):
+def login_password_previous(bt_click, name, data):
     if name:
-        email_style.update({"display":"none"})
-        register_style.update({"display":"flex"})
-        password_style.update({"display":"none"})
+        data["email"].update({"display":"none"})
+        data["register"].update({"display":"flex"})
+        data["password"].update({"display":"none"})
     else:
-        email_style.update({"display":"flex"})
-        register_style.update({"display":"none"})
-        password_style.update({"display":"none"})
-    return [email_style, register_style, password_style]
+        data["email"].update({"display":"flex"})
+        data["register"].update({"display":"none"})
+        data["password"].update({"display":"none"})
+    return [data]
 
 @app.callback(
     [
@@ -207,7 +221,7 @@ def login_password_previous(bt_click, name, email_style, register_style, passwor
     prevent_initial_call=True,
 )
 def login_password_next(bt_click, key_submit, email, password):
-    if bool(email and password):
+    if email and password:
         user = dbase.get_user_by(email)
         if user:
             if user.active == 1 and check_password_hash(user.password, password):

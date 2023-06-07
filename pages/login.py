@@ -27,9 +27,10 @@ def layout():
                     align="center",
                     justify="center",
                     children=[
+                        dcc.Store("login_step_status", storage_type="session"),
                         dbc.Card(
                             id="login_step_email",
-                            style={"width":"400px","padding":"0px","display":"flex"},
+                            style={"display":"none"},
                             children=[
                                 dbc.CardHeader(
                                     style={"text-align":"center"},
@@ -68,7 +69,7 @@ def layout():
                         ),
                         dbc.Card(
                             id="login_step_register",
-                            style={"width":"400px","padding":"0px","display":"none"},
+                            style={"display":"none"},
                             children=[
                                 dbc.CardHeader(
                                     style={"text-align":"center"},
@@ -111,7 +112,7 @@ def layout():
                         ),
                         dbc.Card(
                             id="login_step_password",
-                            style={"width":"400px","padding":"0px","display":"none"},
+                            style={"display":"none"},
                             children=[
                                 dbc.CardHeader(
                                     style={"text-align":"center"},
