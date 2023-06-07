@@ -6,8 +6,7 @@ import secrets
 import string
 
 import dash_bootstrap_components as dbc
-import pandas as pd
-from dash import Dash, Input, Output, State, dcc, page_container
+from dash import Dash, Input, Output, State, dcc, html, page_container
 from flask import Flask
 from flask_login import LoginManager, login_user
 from sqlalchemy.pool import SingletonThreadPool
@@ -51,8 +50,9 @@ app = Dash(
         "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.0.5/jspdf.plugin.autotable.js",
     ],
     external_stylesheets=[
-        dbc.themes.ZEPHYR,
+        dbc.themes.SPACELAB,
         "https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css",
+        "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css",
     ],
     meta_tags=[
         {"charset": "utf-8"},
@@ -207,6 +207,23 @@ def login_password_previous(bt_click, name, data):
 
 @app.callback(
     [
+        Output("login_password", "type"),
+        Output("login_password_toggle", "children"),
+    ],
+    [
+        Input("login_password_toggle", "n_clicks"),
+    ],
+    prevent_initial_call=True,
+)
+def toggle_password_visibility(bt_click):
+    if bt_click % 2 == 1:
+        return ["text", html.I(className="bi bi-eye-fill")]
+    else:
+        return ["password", html.I(className="bi bi-eye-slash-fill")]
+
+
+@app.callback(
+    [
         Output("login_location_root", "href"),
         Output("login_location_root", "refresh"),
     ],
@@ -227,10 +244,7 @@ def login_password_next(bt_click, key_submit, email, password):
             if user.active == 1 and check_password_hash(user.password, password):
                 login_user(user, remember=True)
                 return ["/home", True]
-        else:
-            return ["/", False]
-    else:
-        return ["/", False]
+    return ["/", False]
 
 
 if __name__ == "__main__":

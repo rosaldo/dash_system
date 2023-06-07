@@ -132,7 +132,14 @@ def layout():
                                                     persistence_type="session",
                                                     placeholder="digite a senha que recebeu",
                                                     type="password",
-                                                )
+                                                ),
+                                                dbc.Button(
+                                                    html.I(className="bi bi-eye-slash-fill"),
+                                                    id="login_password_toggle",
+                                                    color="primary",
+                                                    outline=True,
+                                                    className="ml-2",
+                                                ),
                                             ]
                                         ),
                                         dbc.Row(
@@ -154,7 +161,6 @@ def layout():
                                 )
                             ]
                         ),
-                        
                     ]
                 )
             ],
