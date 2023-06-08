@@ -226,6 +226,7 @@ def toggle_password_visibility(bt_click):
     [
         Output("login_location_root", "href"),
         Output("login_location_root", "refresh"),
+        Output("login_step_status", "data"),
     ],
     [
         Input("login_password_next", "n_clicks"),
@@ -234,17 +235,21 @@ def toggle_password_visibility(bt_click):
     [
         State("login_email", "value"),
         State("login_password", "value"),
+        State("login_step_status", "data"),
     ],
     prevent_initial_call=True,
 )
-def login_password_next(bt_click, key_submit, email, password):
+def login_password_next(bt_click, key_submit, email, password, data):
     if email and password:
         user = dbase.get_user_by(email)
         if user:
             if user.active == 1 and check_password_hash(user.password, password):
                 login_user(user, remember=True)
-                return ["/home", True]
-    return ["/", False]
+                data["email"].update({"display":"flex"})
+                data["register"].update({"display":"none"})
+                data["password"].update({"display":"none"})
+                return ["/home", True, data]
+    return ["/", False, data]
 
 
 if __name__ == "__main__":
