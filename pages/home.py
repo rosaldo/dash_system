@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 from flask_login import current_user
 
-# from pages.menu_bar import navbar
+from pages.menu_bar import navbar
 
 dash.register_page(__name__, path_template="/home", title="DLS - Home")
 
@@ -15,7 +15,7 @@ def layout():
         return dbc.Container(
             fluid=True,
             style={"margin": "0px", "padding": "0px"},
-            children=[],
+            children=[navbar(current_user.name.upper())],
         )
     else:
         return dcc.Location(id="home_location_logout", href="/", refresh=True)
